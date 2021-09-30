@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/SearchScreen';
+import SearchScreen from '../screens/SearchScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import TabBarIcon from './TabBarIcon';
 
@@ -11,7 +11,7 @@ function BottomNavigator(props) {
     <BottomTab.Navigator>
       <BottomTab.Screen
         name="Home"
-        component={HomeScreen}
+        component={SearchScreen}
         options={{
           title: 'Search Price by Stock Symbol',
           tabBarIcon: ({ focused }) => (

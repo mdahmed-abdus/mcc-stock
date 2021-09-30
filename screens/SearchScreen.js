@@ -1,16 +1,24 @@
 import React from 'react';
-import { TouchableWithoutFeedback, View, Keyboard } from 'react-native';
+import { TouchableWithoutFeedback, View, Keyboard, Alert } from 'react-native';
 import SearchBox from '../components/SearchBox';
+import { getStockPrice } from '../services/stockService';
 
-function HomeScreen(props) {
-  const handleChangeSearchText = text => {
+function SearchScreen(props) {
+  const handleChangeSearchText = async text => {
     if (text.length === 0) {
       return;
     }
 
     text = text.replace(/[.*+\-?^${}()|[\]\\]/g, ''); //prevent the error caused by entering special characters
-    // implement
+    console.log();
     console.log(text);
+    const price = await getStockPrice(text);
+
+    if (price) {
+      Alert.alert(`Price of ${text} stock`, price);
+    } else {
+      Alert.alert('Price could not be loaded', 'Please try again');
+    }
   };
 
   return (
@@ -29,4 +37,4 @@ function HomeScreen(props) {
   );
 }
 
-export default HomeScreen;
+export default SearchScreen;

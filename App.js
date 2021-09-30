@@ -12,7 +12,7 @@ export default function App() {
   return (
     <AppearanceProvider>
       <View style={{ flex: 1 }}>
-        <StatusBar style="inverted" />
+        <StatusBar style="auto" />
         <NavigationContainer theme={DarkTheme}>
           <Stack.Navigator>
             <Stack.Screen name="mcc-stock" component={BottomNavigator} />

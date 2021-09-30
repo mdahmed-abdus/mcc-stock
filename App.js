@@ -4,18 +4,11 @@ import { View } from 'react-native';
 import BottomNavigator from './navigation/BottomNavigator';
 import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import {
-  AppearanceProvider,
-  Appearance,
-  useColorScheme,
-} from 'react-native-appearance';
+import { AppearanceProvider } from 'react-native-appearance';
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  console.log(Appearance.getColorScheme());
-  useColorScheme('dark');
-  console.log(Appearance.getColorScheme());
   return (
     <AppearanceProvider>
       <View style={{ flex: 1 }}>

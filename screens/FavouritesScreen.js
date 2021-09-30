@@ -7,6 +7,7 @@ import {
   Text,
   Keyboard,
   Alert,
+  Button,
 } from 'react-native';
 import SearchBox from '../components/SearchBox';
 import { scaleSize } from '../constants/layout';
@@ -37,7 +38,7 @@ function FavouritesScreen(props) {
     const quote = await getQuote(symbol);
 
     if (!quote.success) {
-      Alert.alert('Invalid symbol', 'The stock symbol entered is invalid');
+      Alert.alert('Invalid symbol', `The stock symbol "${symbol}" is invalid`);
       return;
     }
 
@@ -45,7 +46,23 @@ function FavouritesScreen(props) {
       QuoteModel[k] = { ...QuoteModel[k], value: quote[k] };
     });
 
+    QuoteModel['lossProfitColor'] =
+      QuoteModel.changePercent.value >= 0 ? 'green' : 'red';
+
     setQuotes(quotes.concat([{ ...QuoteModel }]));
+  };
+
+  const showQuote = index => {
+    console.log('show quote:', index);
+    // implement
+  };
+
+  const removeStock = async index => {
+    console.log('removed index:', index);
+    if (index > -1) {
+      quotes.splice(index, 1);
+      setQuotes([...quotes]);
+    }
   };
 
   const loadPressableTextStyle = pressed =>
@@ -57,9 +74,50 @@ function FavouritesScreen(props) {
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
       <View style={{ padding: 10 }}>
         {quotes.map((q, i) => (
-          <Text key={i} style={{ color: DefaultTheme.colors.card, padding: 5 }}>
-            {q.companyName.value} ({q.symbol.value})
-          </Text>
+          <Pressable
+            key={i}
+            style={{
+              padding: 5,
+              margin: 5,
+              borderColor: DefaultTheme.colors.card,
+              borderWidth: 1,
+            }}
+            onPress={() => showQuote(i)}
+          >
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text style={{ color: DefaultTheme.colors.card, padding: 5 }}>
+                {q.companyName.value} ({q.symbol.value})
+              </Text>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text
+                  style={{
+                    color: q.lossProfitColor,
+                    padding: 5,
+                    paddingHorizontal: 10,
+                  }}
+                >
+                  {(q.changePercent.value * 100).toFixed(2)}%
+                </Text>
+                <Button
+                  color="rgba(255, 0, 0, 0.6)"
+                  onPress={() => removeStock(i)}
+                  title={'Remove'}
+                ></Button>
+              </View>
+            </View>
+          </Pressable>
         ))}
         <SearchBox
           placeholder="Search stock by symbol (ex: tsla)"

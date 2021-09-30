@@ -4,8 +4,13 @@ import SearchBox from '../components/SearchBox';
 
 function HomeScreen(props) {
   const handleChangeSearchText = text => {
+    if (text.length === 0) {
+      return;
+    }
+
     text = text.replace(/[.*+\-?^${}()|[\]\\]/g, ''); //prevent the error caused by entering special characters
     // implement
+    console.log(text);
   };
 
   return (

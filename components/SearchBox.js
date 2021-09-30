@@ -33,7 +33,7 @@ function SearchBox({
         }}
       />
       <TextInput
-        style={{ color: DefaultTheme.colors.text }}
+        style={{ flex: 1, color: DefaultTheme.colors.text }}
         autoCapitalize="none"
         placeholder={placeholder}
         defaultValue={searchText}

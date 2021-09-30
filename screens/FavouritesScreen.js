@@ -43,7 +43,7 @@ function FavouritesScreen(props) {
           style={({ pressed }) => [
             {
               backgroundColor: pressed
-                ? '#FFFFFF'
+                ? DefaultTheme.colors.card
                 : DefaultTheme.colors.primary,
               borderColor: DefaultTheme.colors.primary,
             },

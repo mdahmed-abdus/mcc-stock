@@ -39,7 +39,8 @@ function SearchScreen(props) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View
         style={{
-          flex: 1, // get full space
+          flex: 1,
+          padding: 10,
         }}
       >
         <SearchBox

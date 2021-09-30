@@ -8,8 +8,9 @@ function SearchBox({
   placeholder = 'Search',
   searchText,
   handleChangeSearchText,
+  wait = 500,
 }) {
-  const debounced = debounce(handleChangeSearchText, 500);
+  const debounced = debounce(handleChangeSearchText, wait);
 
   return (
     <View

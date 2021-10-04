@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { TouchableWithoutFeedback, View, Keyboard, Alert } from 'react-native';
+import {
+  TouchableWithoutFeedback,
+  View,
+  Keyboard,
+  Alert,
+  StyleSheet,
+} from 'react-native';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import { getQuote } from '../services/stockService';
 
@@ -38,12 +44,7 @@ function SearchScreen(props) {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View
-        style={{
-          flex: 1,
-          padding: 10,
-        }}
-      >
+      <View style={style.mainView}>
         <SearchBoxWithButton
           placeholder="Search stock by symbol (ex: tsla)"
           onChangeText={setText}
@@ -56,3 +57,10 @@ function SearchScreen(props) {
 }
 
 export default SearchScreen;
+
+const style = StyleSheet.create({
+  mainView: {
+    flex: 1,
+    padding: 10,
+  },
+});

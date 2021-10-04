@@ -14,7 +14,7 @@ function BottomNavigator(props) {
         name="Search"
         component={SearchScreen}
         options={{
-          title: 'Search Price by Stock Symbol',
+          title: 'Search Stock by Symbol',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="search" />
           ),

@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SearchScreen from '../screens/SearchScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 import FavouritesScreen from '../screens/FavouritesScreen';
 import OthersScreen from '../screens/OthersScreen';
 import TabBarIcon from '../components/TabBarIcon';
@@ -18,16 +17,6 @@ function BottomNavigator(props) {
           title: 'Search Price by Stock Symbol',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="search" />
-          ),
-        }}
-      />
-      <BottomTab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="settings-outline" />
           ),
         }}
       />

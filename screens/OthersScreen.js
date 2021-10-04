@@ -8,6 +8,7 @@ import {
   Button,
   StyleSheet,
 } from 'react-native';
+import PressableButton from '../components/PressableButton';
 import * as Location from 'expo-location';
 
 function OthersScreen(props) {
@@ -49,7 +50,10 @@ function OthersScreen(props) {
           <Text style={style.textStyle}>Your location - not found</Text>
         )}
         <Text style={style.textStyle}>Powered by IEX Cloud</Text>
-        <Button onPress={refreshLocation} title="Refresh Location" />
+        <PressableButton
+          onPress={refreshLocation}
+          buttonText="Refresh location"
+        />
       </View>
     </TouchableWithoutFeedback>
   );

@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
 import { scaleSize } from '../constants/layout';
 import { DefaultTheme } from '@react-navigation/native';
+import PressableButton from './PressableButton';
 
 function SearchBoxWithButton({
   placeholder = 'Search',
@@ -23,24 +24,12 @@ function SearchBoxWithButton({
           onChangeText={text => onChangeText(text)}
         />
       </View>
-      <Pressable
-        style={({ pressed }) => style.pressable(pressed)}
-        onPress={onPress}
-      >
-        {({ pressed }) => (
-          <Text style={style.pressableText(pressed)}>{buttonText}</Text>
-        )}
-      </Pressable>
+      <PressableButton onPress={onPress} buttonText={buttonText} />
     </View>
   );
 }
 
 export default SearchBoxWithButton;
-
-const loadPressableTextStyle = pressed =>
-  pressed
-    ? { color: DefaultTheme.colors.primary }
-    : { color: DefaultTheme.colors.card };
 
 const style = StyleSheet.create({
   searchBox: {
@@ -59,25 +48,5 @@ const style = StyleSheet.create({
   textInput: {
     flex: 1,
     color: DefaultTheme.colors.text,
-  },
-  pressable: pressed => {
-    return {
-      backgroundColor: pressed
-        ? DefaultTheme.colors.text
-        : DefaultTheme.colors.primary,
-      borderColor: DefaultTheme.colors.primary,
-      borderWidth: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: scaleSize(40),
-      marginHorizontal: scaleSize(3),
-      marginTop: scaleSize(5),
-    };
-  },
-  pressableText: pressed => {
-    return {
-      color: pressed ? DefaultTheme.colors.primary : DefaultTheme.colors.card,
-    };
   },
 });

@@ -24,18 +24,11 @@ function SearchBoxWithButton({
         />
       </View>
       <Pressable
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed
-              ? DefaultTheme.colors.text
-              : DefaultTheme.colors.primary,
-          },
-          style.pressableNotPressed,
-        ]}
+        style={({ pressed }) => style.pressable(pressed)}
         onPress={onPress}
       >
         {({ pressed }) => (
-          <Text style={loadPressableTextStyle(pressed)}>{buttonText}</Text>
+          <Text style={style.pressableText(pressed)}>{buttonText}</Text>
         )}
       </Pressable>
     </View>
@@ -67,14 +60,24 @@ const style = StyleSheet.create({
     flex: 1,
     color: DefaultTheme.colors.text,
   },
-  pressableNotPressed: {
-    borderColor: DefaultTheme.colors.primary,
-    borderWidth: 1,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: scaleSize(40),
-    marginHorizontal: scaleSize(3),
-    marginTop: scaleSize(5),
+  pressable: pressed => {
+    return {
+      backgroundColor: pressed
+        ? DefaultTheme.colors.text
+        : DefaultTheme.colors.primary,
+      borderColor: DefaultTheme.colors.primary,
+      borderWidth: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: scaleSize(40),
+      marginHorizontal: scaleSize(3),
+      marginTop: scaleSize(5),
+    };
+  },
+  pressableText: pressed => {
+    return {
+      color: pressed ? DefaultTheme.colors.primary : DefaultTheme.colors.card,
+    };
   },
 });

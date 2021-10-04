@@ -8,6 +8,7 @@ import {
   Keyboard,
   Alert,
   Button,
+  StyleSheet,
 } from 'react-native';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import { QuoteModel } from '../models/QuoteModel';
@@ -66,48 +67,25 @@ function FavouritesScreen(props) {
 
   return (
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-      <View style={{ padding: 10 }}>
+      <View style={style.mainView}>
         {quotes.map((q, i) => (
           <Pressable
             key={i}
-            style={{
-              padding: 5,
-              margin: 5,
-              borderColor: DefaultTheme.colors.card,
-              borderWidth: 1,
-            }}
+            style={style.favPressable}
             onPress={() => showQuote(i)}
           >
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Text style={{ color: DefaultTheme.colors.card, padding: 5 }}>
+            <View style={style.favView}>
+              <Text style={style.favText}>
                 {q.companyName.value} ({q.symbol.value})
               </Text>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text
-                  style={{
-                    color: q.lossProfitColor,
-                    padding: 5,
-                    paddingHorizontal: 10,
-                  }}
-                >
+              <View style={style.favSecTwoView}>
+                <Text style={style.lossProfitText(q)}>
                   {(q.changePercent.value * 100).toFixed(2)}%
                 </Text>
                 <Button
                   color="rgba(255, 0, 0, 0.6)"
                   onPress={() => removeStock(i)}
-                  title={'Remove'}
+                  title="Remove"
                 ></Button>
               </View>
             </View>
@@ -125,3 +103,37 @@ function FavouritesScreen(props) {
 }
 
 export default FavouritesScreen;
+
+const style = StyleSheet.create({
+  mainView: {
+    padding: 10,
+  },
+  favPressable: {
+    padding: 5,
+    margin: 5,
+    borderColor: DefaultTheme.colors.card,
+    borderWidth: 1,
+  },
+  favView: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  favText: {
+    color: DefaultTheme.colors.card,
+    padding: 5,
+  },
+  favSecTwoView: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  lossProfitText: q => {
+    return {
+      color: q.lossProfitColor,
+      padding: 5,
+      paddingHorizontal: 10,
+    };
+  },
+});

@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableWithoutFeedback, View, Keyboard, Alert } from 'react-native';
-import SearchBox from '../components/SearchBox';
+import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import { getQuote } from '../services/stockService';
 
 function SearchScreen(props) {
-  const handleChangeSearchText = async text => {
+  const [text, setText] = useState('');
+
+  const onPress = async () => {
     if (text.length === 0) {
       return;
     }
 
-    text = text.replace(/[.*+\-?^${}()|[\]\\]/g, ''); //prevent the error caused by entering special characters
     console.log();
     console.log(text);
 
@@ -43,9 +44,11 @@ function SearchScreen(props) {
           padding: 10,
         }}
       >
-        <SearchBox
-          placeholder="Enter stock symbol (ex: tsla)"
-          handleChangeSearchText={handleChangeSearchText}
+        <SearchBoxWithButton
+          placeholder="Search stock by symbol (ex: tsla)"
+          onChangeText={setText}
+          onPress={onPress}
+          buttonText="Search stock"
         />
       </View>
     </TouchableWithoutFeedback>

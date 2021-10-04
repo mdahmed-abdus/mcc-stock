@@ -9,8 +9,7 @@ import {
   Alert,
   Button,
 } from 'react-native';
-import SearchBox from '../components/SearchBox';
-import { scaleSize } from '../constants/layout';
+import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import { QuoteModel } from '../models/QuoteModel';
 import { getQuote } from '../services/stockService';
 
@@ -65,11 +64,6 @@ function FavouritesScreen(props) {
     }
   };
 
-  const loadPressableTextStyle = pressed =>
-    pressed
-      ? { color: DefaultTheme.colors.primary }
-      : { color: DefaultTheme.colors.card };
-
   return (
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
       <View style={{ padding: 10 }}>
@@ -119,35 +113,12 @@ function FavouritesScreen(props) {
             </View>
           </Pressable>
         ))}
-        <SearchBox
+        <SearchBoxWithButton
           placeholder="Search stock by symbol (ex: tsla)"
-          handleChangeSearchText={text => setSymbol(text)}
-          wait={0}
-        />
-        <Pressable
-          style={({ pressed }) => [
-            {
-              backgroundColor: pressed
-                ? DefaultTheme.colors.text
-                : DefaultTheme.colors.primary,
-              borderColor: DefaultTheme.colors.primary,
-            },
-            {
-              borderWidth: 1,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: scaleSize(40),
-              marginHorizontal: scaleSize(3),
-              marginTop: scaleSize(5),
-            },
-          ]}
+          onChangeText={setSymbol}
           onPress={handleOnPress}
-        >
-          {({ pressed }) => (
-            <Text style={loadPressableTextStyle(pressed)}>Add stock</Text>
-          )}
-        </Pressable>
+          buttonText="Add stock"
+        />
       </View>
     </TouchableWithoutFeedback>
   );

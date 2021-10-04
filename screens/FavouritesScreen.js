@@ -13,10 +13,31 @@ import {
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import { QuoteModel } from '../models/QuoteModel';
 import { getQuote } from '../services/stockService';
+import * as FileSystem from 'expo-file-system';
+import PressableButton from '../components/PressableButton';
 
 function FavouritesScreen(props) {
+  const fileUri = FileSystem.documentDirectory + 'fav-stocks.txt';
   const [quotes, setQuotes] = useState([]);
   const [symbol, setSymbol] = useState('');
+
+  const saveToFile = async () => {
+    if (quotes.length === 0) {
+      return;
+    }
+
+    console.log('Saving...');
+
+    let data = '';
+    for (const q of quotes) {
+      data += q.symbol.value + ' ';
+    }
+
+    await FileSystem.writeAsStringAsync(fileUri, data);
+
+    Alert.alert('Saved', 'Favourites saved');
+    console.log('Favs saved:', fileUri);
+  };
 
   const handleOnPress = async () => {
     Keyboard.dismiss();
@@ -97,6 +118,7 @@ function FavouritesScreen(props) {
           onPress={handleOnPress}
           buttonText="Add stock"
         />
+        <PressableButton onPress={saveToFile} buttonText="Save" />
       </View>
     </TouchableWithoutFeedback>
   );

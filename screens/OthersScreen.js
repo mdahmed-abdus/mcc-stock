@@ -14,8 +14,6 @@ function OthersScreen(props) {
 
   const x = async () => {
     try {
-      await Location.requestForegroundPermissionsAsync();
-
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });

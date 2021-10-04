@@ -11,7 +11,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
-import { QuoteModel } from '../models/QuoteModel';
 import { getQuote } from '../services/stockService';
 import * as FileSystem from 'expo-file-system';
 import PressableButton from '../components/PressableButton';
@@ -30,7 +29,7 @@ function FavouritesScreen(props) {
 
     let data = '';
     for (const q of quotes) {
-      data += q.symbol.value + ' ';
+      data += q.symbol + ' ';
     }
 
     await FileSystem.writeAsStringAsync(fileUri, data);
@@ -46,15 +45,6 @@ function FavouritesScreen(props) {
       return;
     }
 
-    let alreadyAdded = false;
-    quotes.forEach(q => {
-      alreadyAdded = q.symbol.value === symbol.toUpperCase();
-    });
-    if (alreadyAdded) {
-      Alert.alert('Already a favourite', `${symbol} is a favourite.`);
-      return;
-    }
-
     console.log('handleOnPress -', symbol);
     const quote = await getQuote(symbol);
 
@@ -63,14 +53,8 @@ function FavouritesScreen(props) {
       return;
     }
 
-    Object.keys(QuoteModel).forEach(k => {
-      QuoteModel[k] = { ...QuoteModel[k], value: quote[k] };
-    });
-
-    QuoteModel['lossProfitColor'] =
-      QuoteModel.changePercent.value >= 0 ? 'green' : 'red';
-
-    setQuotes(quotes.concat([{ ...QuoteModel }]));
+    quote.lossProfitColor = quote.changePercent >= 0 ? 'green' : 'red';
+    setQuotes([...quotes, quote]);
   };
 
   const showQuote = index => {
@@ -97,11 +81,11 @@ function FavouritesScreen(props) {
           >
             <View style={style.favView}>
               <Text style={style.favText}>
-                {q.companyName.value} ({q.symbol.value})
+                {q.companyName} ({q.symbol})
               </Text>
               <View style={style.favSecTwoView}>
                 <Text style={style.lossProfitText(q)}>
-                  {(q.changePercent.value * 100).toFixed(2)}%
+                  {(q.changePercent * 100).toFixed(2)}%
                 </Text>
                 <Button
                   color="rgba(255, 0, 0, 0.6)"

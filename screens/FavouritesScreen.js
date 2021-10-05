@@ -9,13 +9,13 @@ import {
   Alert,
   Button,
   StyleSheet,
-  Modal,
 } from 'react-native';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import { getQuote } from '../services/stockService';
 import * as FileSystem from 'expo-file-system';
 import PressableButton from '../components/PressableButton';
 import { ScrollView } from 'react-native-gesture-handler';
+import LoadingModal from '../components/LoadingModal';
 
 function FavouritesScreen(props) {
   const fileUri = FileSystem.documentDirectory + 'fav-stocks.txt';
@@ -121,12 +121,7 @@ function FavouritesScreen(props) {
   return (
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
       <ScrollView style={style.mainView}>
-        <Modal visible={loadingMessage.length !== 0} transparent={true}>
-          <View style={style.loadingModal}>
-            <Text style={style.loadingText}>{loadingMessage}</Text>
-          </View>
-        </Modal>
-
+        <LoadingModal loadingMessage={loadingMessage} />
         {quotes.map((q, i) => (
           <Pressable
             key={i}
@@ -197,16 +192,5 @@ const style = StyleSheet.create({
       padding: 5,
       paddingHorizontal: 10,
     };
-  },
-  loadingModal: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-  },
-  loadingText: {
-    fontSize: 30,
-    color: DefaultTheme.colors.primary,
   },
 });

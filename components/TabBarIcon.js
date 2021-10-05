@@ -6,7 +6,7 @@ function TabBarIcon(props) {
   return (
     <Ionicons
       name={props.name}
-      size={30}
+      size={27}
       color={
         props.focused ? DefaultTheme.colors.primary : DefaultTheme.colors.border
       }

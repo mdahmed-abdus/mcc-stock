@@ -13,6 +13,7 @@ import { getChartData, getQuote } from '../services/stockService';
 import { LineChart } from 'react-native-chart-kit';
 import StockDetailRow from '../components/StockDetailRow';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
+import LoadingModal from '../components/LoadingModal';
 
 function StockScreen(props) {
   const [dataAvailable, setDataAvailable] = useState(false);
@@ -20,12 +21,15 @@ function StockScreen(props) {
   const [closes, setCloses] = useState([]);
   const [symbol, setSymbol] = useState('');
   const [stockQuote, setStockQuote] = useState(null);
+  const [loadingMessage, setLoadingMessage] = useState('');
 
   const searchStock = async () => {
     Keyboard.dismiss();
     if (symbol.length === 0) {
       return;
     }
+
+    setLoadingMessage('Loading...');
 
     console.log('Refreshing...');
 
@@ -44,6 +48,7 @@ function StockScreen(props) {
         `Data could not be loaded for symbol "${symbol}"`
       );
       setDataAvailable(false);
+      setLoadingMessage('');
       return;
     }
 
@@ -57,17 +62,15 @@ function StockScreen(props) {
     setDates(x);
     setCloses(y);
     setStockQuote(stockQuoteData);
-    console.log(
-      stockQuote.latestVolume,
-      stockQuote.volume || stockQuote.latestVolume || '-'
-    );
     setDataAvailable(true);
     console.log('Refreshed');
+    setLoadingMessage('');
   };
 
   return (
     <ScrollView>
       <View style={style.main}>
+        <LoadingModal loadingMessage={loadingMessage} />
         {dataAvailable && (
           <View style={style.dataContainer}>
             <Text style={style.text}>

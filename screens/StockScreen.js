@@ -1,30 +1,47 @@
 import React, { useState } from 'react';
 import { DefaultTheme } from '@react-navigation/native';
-import { Text, View, StyleSheet, Dimensions, Alert } from 'react-native';
-import PressableButton from '../components/PressableButton';
-import { getChartData } from '../services/stockService';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  Alert,
+  ScrollView,
+  Keyboard,
+} from 'react-native';
+import { getChartData, getQuote } from '../services/stockService';
 import { LineChart } from 'react-native-chart-kit';
 import { scaleSize } from '../constants/layout';
 import StockDetailRow from '../components/StockDetailRow';
+import SearchBoxWithButton from '../components/SearchBoxWithButton';
 
 function StockScreen(props) {
   const [dataAvailable, setDataAvailable] = useState(false);
   const [dates, setDates] = useState([]);
   const [closes, setCloses] = useState([]);
-  const [stock, setStock] = useState({
-    name: 'Tesla INC',
-    open: '1000',
-    low: '100',
-    close: '100',
-    high: '123',
-    volumes: '20000',
-  });
+  const [symbol, setSymbol] = useState('');
+  const [stockQuote, setStockQuote] = useState(null);
 
-  const refresh = async () => {
+  const searchStock = async () => {
+    Keyboard.dismiss();
+    if (symbol.length === 0) {
+      return;
+    }
+
     console.log('Refreshing...');
-    const { success, data } = await getChartData('tsla', '1m');
-    if (!success) {
+
+    const { success: chartDataSuccess, data } = await getChartData(
+      symbol,
+      '1m'
+    );
+    const { success: quoteSuccess, data: stockQuoteData } = await getQuote(
+      symbol,
+      '1m'
+    );
+
+    if (!chartDataSuccess || !quoteSuccess) {
       Alert.alert('Could not be loaded', 'Data could not be loaded');
+      setDataAvailable(false);
       return;
     }
 
@@ -37,57 +54,71 @@ function StockScreen(props) {
 
     setDates(x);
     setCloses(y);
+    setStockQuote(stockQuoteData);
+    console.log(
+      stockQuote.latestVolume,
+      stockQuote.volume || stockQuote.latestVolume || '-'
+    );
     setDataAvailable(true);
     console.log('Refreshed');
   };
 
   return (
-    <View style={style.main}>
-      {dataAvailable && (
-        <View style={style.dataContainer}>
-          <Text style={style.text}>TSLA</Text>
-          <LineChart
-            style={style.lineChart}
-            data={{ labels: dates, datasets: [{ data: closes }] }}
-            width={Dimensions.get('window').width}
-            height={500}
-            yAxisLabel="$"
-            yAxisInterval={1}
-            verticalLabelRotation={90}
-            chartConfig={{
-              backgroundGradientFrom: DefaultTheme.colors.text,
-              backgroundGradientTo: DefaultTheme.colors.primary,
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              propsForDots: {
-                r: '1',
-                strokeWidth: '3',
-                stroke: DefaultTheme.colors.card,
-              },
-            }}
-          />
-          <View style={style.stockDetail}>
-            <View style={style.stockHeader}>
-              <Text style={style.stockName}>{stock.name}</Text>
+    <ScrollView>
+      <View style={style.main}>
+        {dataAvailable && (
+          <View style={style.dataContainer}>
+            <Text style={style.text}>
+              {stockQuote.companyName} [{stockQuote.symbol}]
+            </Text>
+            <LineChart
+              style={style.lineChart}
+              data={{ labels: dates, datasets: [{ data: closes }] }}
+              width={Dimensions.get('window').width}
+              height={500}
+              yAxisLabel="$"
+              yAxisInterval={1}
+              verticalLabelRotation={90}
+              chartConfig={{
+                backgroundGradientFrom: DefaultTheme.colors.text,
+                backgroundGradientTo: DefaultTheme.colors.primary,
+                decimalPlaces: 2,
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                propsForDots: {
+                  r: '1',
+                  strokeWidth: '3',
+                  stroke: DefaultTheme.colors.card,
+                },
+              }}
+            />
+            <View style={style.stockDetail}>
+              <View style={style.stockHeader}>
+                <Text style={style.stockName}>{stockQuote.symbol}</Text>
+              </View>
+              <StockDetailRow
+                propertyNames={['OPEN', 'HIGH']}
+                propertyValues={[stockQuote.open, stockQuote.high]}
+              />
+              <StockDetailRow
+                propertyNames={['LOW', 'VOLUME']}
+                propertyValues={[stockQuote.low, stockQuote.latestVolume]}
+              />
+              <StockDetailRow
+                propertyNames={['P/E', 'AVG VOLUME']}
+                propertyValues={[stockQuote.peRatio, stockQuote.avgTotalVolume]}
+              />
             </View>
-            <StockDetailRow
-              propertyNames={['OPEN', 'LOW']}
-              propertyValues={[stock.open, stock.low]}
-            />
-            <StockDetailRow
-              propertyNames={['CLOSE', 'HIGH']}
-              propertyValues={[stock.close, stock.high]}
-            />
-            <StockDetailRow
-              propertyNames={['VOLUME']}
-              propertyValues={[stock.volumes]}
-            />
           </View>
-        </View>
-      )}
-      <PressableButton buttonText="Refresh" onPress={refresh} />
-    </View>
+        )}
+        <SearchBoxWithButton
+          placeholder="Search stock by symbol (ex: tsla)"
+          onChangeText={setSymbol}
+          onPress={searchStock}
+          buttonText="Search stock"
+        />
+      </View>
+    </ScrollView>
   );
 }
 
@@ -96,6 +127,7 @@ export default StockScreen;
 const style = StyleSheet.create({
   main: {
     flex: 1,
+    paddingBottom: 50,
   },
   dataContainer: {
     display: 'flex',
@@ -105,8 +137,8 @@ const style = StyleSheet.create({
   },
   text: {
     padding: 10,
-    fontSize: scaleSize(30),
-    color: DefaultTheme.colors.card,
+    fontSize: 30,
+    color: 'white',
   },
   lineChart: {},
   stockDetail: {

@@ -1,17 +1,30 @@
 import { DefaultTheme } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
   TouchableWithoutFeedback,
   View,
   Text,
   Alert,
-  Button,
   StyleSheet,
 } from 'react-native';
 import PressableButton from '../components/PressableButton';
 import * as Location from 'expo-location';
+import { auth, signOut } from '../services/firebase';
 
 function OthersScreen(props) {
+  const navigation = useNavigation();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigation.replace('auth');
+    } catch (e) {
+      console.log('Could not sign out');
+      console.log(e.message);
+    }
+  };
+
   const [currentLocation, setCurrentLocation] = useState(null);
 
   const refreshLocation = async () => {
@@ -54,6 +67,7 @@ function OthersScreen(props) {
           onPress={refreshLocation}
           buttonText="Refresh location"
         />
+        <PressableButton onPress={handleSignOut} buttonText="Sign out" />
       </View>
     </TouchableWithoutFeedback>
   );

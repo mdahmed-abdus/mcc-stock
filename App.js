@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { AppearanceProvider } from 'react-native-appearance';
 import * as Location from 'expo-location';
 import * as MediaLibrary from 'expo-media-library';
+import AuthScreen from './screens/AuthScreen';
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,11 @@ export default function App() {
         <StatusBar style="auto" />
         <NavigationContainer theme={DarkTheme}>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="auth"
+              component={AuthScreen}
+            />
             <Stack.Screen name="mcc-stock" component={BottomNavigator} />
           </Stack.Navigator>
         </NavigationContainer>

@@ -13,33 +13,23 @@ function SearchScreen(props) {
   const [text, setText] = useState('');
 
   const onPress = async () => {
+    Keyboard.dismiss();
     if (text.length === 0) {
       return;
     }
 
-    console.log();
-    console.log(text);
+    const quote = await getQuote(text);
 
-    const {
-      success,
-      companyName,
-      symbol,
-      latestPrice: price,
-      currency,
-      close,
-      open,
-    } = await getQuote(text);
-
-    if (success) {
-      const percentage = (((close - open) * 100) / open).toFixed(2);
-      console.log(percentage);
-      Alert.alert(
-        `Price of ${companyName} (${symbol})`,
-        `${currency} ${price} (${percentage}%)`
-      );
-    } else {
+    if (!quote.success) {
       Alert.alert('Price could not be loaded', 'Please try again');
+      return;
     }
+
+    const percentage = (quote.changePercent * 100).toFixed(2);
+    Alert.alert(
+      `Price of ${quote.companyName} (${quote.symbol})`,
+      `${quote.currency} ${quote.latestPrice} (${percentage}%)`
+    );
   };
 
   return (

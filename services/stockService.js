@@ -13,6 +13,9 @@ const root = async url => {
   }
 };
 
+const getSymbols = () =>
+  root(`https://sandbox.iexapis.com/stable/ref-data/symbols`);
+
 const getStockPrice = symbol =>
   root(`https://sandbox.iexapis.com/stable/stock/${symbol}/price`);
 
@@ -29,6 +32,7 @@ const getChartData = (symbol, range = '1m') =>
   root(`https://sandbox.iexapis.com/stable/stock/${symbol}/chart/${range}`);
 
 export {
+  getSymbols,
   getStockPrice,
   getCompanyDetails,
   getQuote,

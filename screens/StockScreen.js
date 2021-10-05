@@ -22,15 +22,15 @@ function StockScreen(props) {
 
   const refresh = async () => {
     console.log('Refreshing...');
-    const data = await getChartData('tsla', '1m');
-    if (!data.success) {
+    const { success, data } = await getChartData('tsla', '1m');
+    if (!success) {
       Alert.alert('Could not be loaded', 'Data could not be loaded');
       return;
     }
 
     const x = [];
     const y = [];
-    for (const d of data.data) {
+    for (const d of data) {
       x.push(d.date.replace('-', ' '));
       y.push(d.close);
     }

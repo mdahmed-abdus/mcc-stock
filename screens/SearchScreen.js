@@ -18,9 +18,9 @@ function SearchScreen(props) {
       return;
     }
 
-    const quote = await getQuote(text);
+    const { success, data: quote } = await getQuote(text);
 
-    if (!quote.success) {
+    if (!success) {
       Alert.alert('Price could not be loaded', 'Please try again');
       return;
     }

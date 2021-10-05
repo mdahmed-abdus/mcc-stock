@@ -43,8 +43,8 @@ function FavouritesScreen(props) {
     const temp = [];
 
     for (const s of savedSymbols) {
-      const quote = await getQuote(s);
-      if (!quote.success) {
+      const { success, data: quote } = await getQuote(s);
+      if (!success) {
         continue;
       }
 

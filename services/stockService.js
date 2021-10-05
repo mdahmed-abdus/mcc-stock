@@ -23,14 +23,10 @@ const getQuote = symbol =>
   root(`https://sandbox.iexapis.com/stable/stock/${symbol}/quote`);
 
 const getChartDataForOneDay = symbol =>
-  root(
-    `https://sandbox.iexapis.com/stable/stock/stock/${symbol}/intraday-prices`
-  );
+  root(`https://sandbox.iexapis.com/stable/stock/${symbol}/intraday-prices`);
 
-const getChartData = (symbol, range = 'max') =>
-  root(
-    `https://sandbox.iexapis.com/stable/stock/stock/${symbol}/chart/${range}`
-  );
+const getChartData = (symbol, range = '1m') =>
+  root(`https://sandbox.iexapis.com/stable/stock/${symbol}/chart/${range}`);
 
 export {
   getStockPrice,

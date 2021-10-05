@@ -4,7 +4,6 @@ import { IEX_PUBLISHABLE } from '../constants/keys.js';
 const root = async url => {
   try {
     const response = await axios.get(url);
-    console.log(response.data);
     return { success: true, ...response.data };
   } catch (e) {
     console.log(e.response.status, e.response.data);

@@ -1,6 +1,5 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import SearchScreen from '../screens/SearchScreen';
 import FavouritesScreen from '../screens/FavouritesScreen';
 import OthersScreen from '../screens/OthersScreen';
 import TabBarIcon from '../components/TabBarIcon';
@@ -12,12 +11,12 @@ function BottomNavigator(props) {
   return (
     <BottomTab.Navigator>
       <BottomTab.Screen
-        name="Search"
-        component={SearchScreen}
+        name="Stock"
+        component={StockScreen}
         options={{
-          title: 'Search Stock by Symbol',
+          title: 'Stock',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="search" />
+            <TabBarIcon focused={focused} name="analytics" />
           ),
         }}
       />
@@ -38,16 +37,6 @@ function BottomNavigator(props) {
           title: 'Others',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="information-circle-outline" />
-          ),
-        }}
-      />
-      <BottomTab.Screen
-        name="Stock"
-        component={StockScreen}
-        options={{
-          title: 'Stock',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="analytics" />
           ),
         }}
       />

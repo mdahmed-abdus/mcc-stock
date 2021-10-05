@@ -37,7 +37,7 @@ export default function App() {
       <View style={{ flex: 1 }}>
         <StatusBar style="auto" />
         <NavigationContainer theme={DarkTheme}>
-          <Stack.Navigator>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="mcc-stock" component={BottomNavigator} />
           </Stack.Navigator>
         </NavigationContainer>

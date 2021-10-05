@@ -116,13 +116,14 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
   },
   stockHeader: {
+    padding: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: scaleSize(0.5),
+    borderBottomWidth: 1,
     borderBottomColor: '#BCBCBC',
   },
   stockName: {
     color: '#fff',
-    fontSize: scaleSize(20),
+    fontSize: 20,
   },
 });

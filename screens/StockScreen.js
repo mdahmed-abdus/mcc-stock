@@ -102,7 +102,10 @@ function StockScreen(props) {
               />
               <StockDetailRow
                 propertyNames={['LOW', 'VOLUME']}
-                propertyValues={[stockQuote.low, stockQuote.latestVolume]}
+                propertyValues={[
+                  stockQuote.low,
+                  stockQuote.volume || stockQuote.latestVolume || '-',
+                ]}
               />
               <StockDetailRow
                 propertyNames={['P/E', 'AVG VOLUME']}

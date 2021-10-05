@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { getChartData, getQuote } from '../services/stockService';
 import { LineChart } from 'react-native-chart-kit';
-import { scaleSize } from '../constants/layout';
 import StockDetailRow from '../components/StockDetailRow';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 
@@ -40,7 +39,10 @@ function StockScreen(props) {
     );
 
     if (!chartDataSuccess || !quoteSuccess) {
-      Alert.alert('Could not be loaded', 'Data could not be loaded');
+      Alert.alert(
+        'Data could not found',
+        `Data could not be loaded for symbol "${symbol}"`
+      );
       setDataAvailable(false);
       return;
     }

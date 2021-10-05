@@ -85,22 +85,20 @@ function StockScreen(props) {
               yAxisInterval={1}
               verticalLabelRotation={90}
               chartConfig={{
-                backgroundGradientFrom: DefaultTheme.colors.text,
-                backgroundGradientTo: DefaultTheme.colors.primary,
+                backgroundGradientFrom: 'black',
+                backgroundGradientTo: 'black',
                 decimalPlaces: 2,
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                color: (opacity = 0) => 'rgba(255, 255, 255, 0.15)',
+                labelColor: (opacity = 1) => 'rgba(255, 255, 255, 0.8)',
                 propsForDots: {
-                  r: '1',
-                  strokeWidth: '3',
-                  stroke: DefaultTheme.colors.card,
+                  fill: DefaultTheme.colors.primary,
+                  r: '2',
+                  strokeWidth: '2',
+                  stroke: DefaultTheme.colors.primary,
                 },
               }}
             />
             <View style={style.stockDetail}>
-              <View style={style.stockHeader}>
-                <Text style={style.stockName}>{stockQuote.symbol}</Text>
-              </View>
               <StockDetailRow
                 propertyNames={['OPEN', 'HIGH']}
                 propertyValues={[stockQuote.open, stockQuote.high]}
@@ -144,23 +142,23 @@ const style = StyleSheet.create({
     paddingBottom: 10,
   },
   text: {
-    padding: 10,
+    padding: 20,
     fontSize: 30,
     color: 'white',
   },
-  lineChart: {},
+  lineChart: {
+    borderTopWidth: 1,
+    padding: 10,
+    paddingTop: 20,
+    borderTopColor: 'white',
+  },
   stockDetail: {
+    borderTopWidth: 1,
+    borderTopColor: 'white',
     width: '100%',
     padding: 10,
     display: 'flex',
     justifyContent: 'space-between',
-  },
-  stockHeader: {
-    padding: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#BCBCBC',
   },
   stockName: {
     color: '#fff',

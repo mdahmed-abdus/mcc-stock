@@ -4,6 +4,7 @@ import SearchScreen from '../screens/SearchScreen';
 import FavouritesScreen from '../screens/FavouritesScreen';
 import OthersScreen from '../screens/OthersScreen';
 import TabBarIcon from '../components/TabBarIcon';
+import StockScreen from '../screens/StockScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -37,6 +38,16 @@ function BottomNavigator(props) {
           title: 'Others',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="information-circle-outline" />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="Stock"
+        component={StockScreen}
+        options={{
+          title: 'Stock',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="analytics" />
           ),
         }}
       />

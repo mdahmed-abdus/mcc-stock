@@ -5,7 +5,7 @@ const root = async url => {
   url += `?token=${IEX_PUBLISHABLE}`;
   try {
     const response = await axios.get(url);
-    return { success: true, ...response.data };
+    return { success: true, data: response.data };
   } catch (e) {
     console.log(e.response.status, e.response.data);
     console.log(e.message);

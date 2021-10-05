@@ -1,7 +1,6 @@
 import React from 'react';
 import StockDetailProperty from './StockDetailProperty';
 import { View, StyleSheet } from 'react-native';
-import { scaleSize } from '../constants/layout';
 
 function StockDetailRow({ propertyNames, propertyValues }) {
   return (
@@ -25,7 +24,7 @@ const style = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomWidth: scaleSize(1),
+    borderBottomWidth: 1,
     borderBottomColor: '#404142',
   },
 });

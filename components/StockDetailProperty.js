@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { scaleSize } from '../constants/layout';
 
 function StockDetailProperty({ propertyName, propertyValue }) {
   return (
@@ -19,13 +18,13 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: scaleSize(3),
+    padding: 5,
   },
   stockPropertyName: {
     color: '#616263',
   },
   stockPropertyValue: {
     color: '#fff',
-    fontSize: scaleSize(15),
+    fontSize: 15,
   },
 });

@@ -67,6 +67,10 @@ function StockScreen(props) {
     setLoadingMessage('');
   };
 
+  const getChangePercent = () => {
+    return (stockQuote.changePercent * 100).toFixed(2) + '%';
+  };
+
   return (
     <ScrollView>
       <View style={style.main}>
@@ -113,6 +117,10 @@ function StockScreen(props) {
               <StockDetailRow
                 propertyNames={['P/E', 'AVG VOLUME']}
                 propertyValues={[stockQuote.peRatio, stockQuote.avgTotalVolume]}
+              />
+              <StockDetailRow
+                propertyNames={['CHANGE']}
+                propertyValues={[getChangePercent()]}
               />
             </View>
           </View>

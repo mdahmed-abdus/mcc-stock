@@ -122,23 +122,8 @@ function FavouritesScreen(props) {
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
       <ScrollView style={style.mainView}>
         <Modal visible={loadingMessage.length !== 0}>
-          <View
-            style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: DefaultTheme.colors.text,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 30,
-                color: DefaultTheme.colors.primary,
-              }}
-            >
-              {loadingMessage}
-            </Text>
+          <View style={style.loadingModal}>
+            <Text style={style.loadingText}>{loadingMessage}</Text>
           </View>
         </Modal>
 
@@ -212,5 +197,16 @@ const style = StyleSheet.create({
       padding: 5,
       paddingHorizontal: 10,
     };
+  },
+  loadingModal: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: DefaultTheme.colors.text,
+  },
+  loadingText: {
+    fontSize: 30,
+    color: DefaultTheme.colors.primary,
   },
 });

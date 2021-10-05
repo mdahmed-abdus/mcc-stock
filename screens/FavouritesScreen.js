@@ -1,5 +1,5 @@
 import { DefaultTheme } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TouchableWithoutFeedback,
   View,
@@ -9,24 +9,57 @@ import {
   Alert,
   Button,
   StyleSheet,
+  Modal,
 } from 'react-native';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import { getQuote } from '../services/stockService';
 import * as FileSystem from 'expo-file-system';
 import PressableButton from '../components/PressableButton';
+import { ScrollView } from 'react-native-gesture-handler';
 
 function FavouritesScreen(props) {
   const fileUri = FileSystem.documentDirectory + 'fav-stocks.txt';
   const [quotes, setQuotes] = useState([]);
   const [symbol, setSymbol] = useState('');
+  const [loadingMessage, setLoadingMessage] = useState('');
 
-  const saveToFile = async () => {
-    if (quotes.length === 0) {
+  const loadSaved = async () => {
+    console.log('Loading...');
+    setLoadingMessage('Loading...');
+    setQuotes([]);
+
+    const savedSymbols = (await FileSystem.readAsStringAsync(fileUri))
+      .split(' ')
+      .filter(d => d.length !== 0);
+
+    if (savedSymbols.length === 0) {
+      Alert.alert('No saved favourites', 'Saved favourites could not be found');
+      console.log('Loading complete');
+      setLoadingMessage('');
       return;
     }
 
-    console.log('Saving...');
+    let i = 1;
+    const temp = [];
 
+    for (const s of savedSymbols) {
+      const quote = await getQuote(s);
+      if (!quote.success) {
+        continue;
+      }
+
+      quote.lossProfitColor = quote.changePercent >= 0 ? 'green' : 'red';
+      temp.push(quote);
+      setLoadingMessage(`Loading... ${i++}/${savedSymbols.length}`);
+    }
+
+    setQuotes(temp);
+    setLoadingMessage('');
+    console.log('Loading complete');
+  };
+
+  const save = async () => {
+    console.log('Saving...');
     let data = '';
     for (const q of quotes) {
       data += q.symbol + ' ';
@@ -36,6 +69,17 @@ function FavouritesScreen(props) {
 
     Alert.alert('Saved', 'Favourites saved');
     console.log('Favs saved:', fileUri);
+  };
+
+  const saveToFile = async () => {
+    if (quotes.length === 0) {
+      Alert.alert('Saving noting', 'All favourites will be deleted', [
+        { text: 'No' },
+        { text: 'Yes', onPress: save },
+      ]);
+      return;
+    }
+    save();
   };
 
   const handleOnPress = async () => {
@@ -70,9 +114,34 @@ function FavouritesScreen(props) {
     }
   };
 
+  useEffect(() => {
+    loadSaved();
+  }, []);
+
   return (
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-      <View style={style.mainView}>
+      <ScrollView style={style.mainView}>
+        <Modal visible={loadingMessage.length !== 0}>
+          <View
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: DefaultTheme.colors.text,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 30,
+                color: DefaultTheme.colors.primary,
+              }}
+            >
+              {loadingMessage}
+            </Text>
+          </View>
+        </Modal>
+
         {quotes.map((q, i) => (
           <Pressable
             key={i}
@@ -103,7 +172,9 @@ function FavouritesScreen(props) {
           buttonText="Add stock"
         />
         <PressableButton onPress={saveToFile} buttonText="Save" />
-      </View>
+        <PressableButton onPress={loadSaved} buttonText="Load saved" />
+        <View style={{ padding: 40 }} />
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 }

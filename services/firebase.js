@@ -22,7 +22,7 @@ if (firebase.apps.length === 0) {
 const auth = firebase.auth(app);
 const db = firebase.firestore(app);
 
-const saveFav = (symbols = []) => {
+const saveFavs = (symbols = []) => {
   db.collection('favs')
     .doc(auth.currentUser.email)
     .set({ symbols: [...symbols] }, { merge: true });
@@ -33,4 +33,4 @@ const loadFavs = async () => {
   return doc.data();
 };
 
-export { auth, db, saveFav, loadFavs };
+export { auth, db, saveFavs, loadFavs };

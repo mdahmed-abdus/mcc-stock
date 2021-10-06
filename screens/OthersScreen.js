@@ -14,6 +14,9 @@ import { auth } from '../services/firebase';
 import LoadingModal from '../components/LoadingModal';
 
 function OthersScreen(props) {
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [loadingMessage, setLoadingMessage] = useState('');
+
   const navigation = useNavigation();
 
   const handleSignOut = async () => {
@@ -25,9 +28,6 @@ function OthersScreen(props) {
       console.log(e.message);
     }
   };
-
-  const [currentLocation, setCurrentLocation] = useState(null);
-  const [loadingMessage, setLoadingMessage] = useState('');
 
   const refreshLocation = async () => {
     console.log('Refreshing location...');

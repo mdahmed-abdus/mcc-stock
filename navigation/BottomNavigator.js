@@ -4,6 +4,7 @@ import FavouritesScreen from '../screens/FavouritesScreen';
 import OthersScreen from '../screens/OthersScreen';
 import TabBarIcon from '../components/TabBarIcon';
 import StockScreen from '../screens/StockScreen';
+import ChatScreen from '../screens/ChatScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -37,6 +38,19 @@ function BottomNavigator(props) {
           title: 'Others',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="information-circle-outline" />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={{
+          title: 'Chat',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon
+              focused={focused}
+              name="md-chatbubble-ellipses-outline"
+            />
           ),
         }}
       />

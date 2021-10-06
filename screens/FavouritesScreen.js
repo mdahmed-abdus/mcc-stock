@@ -16,14 +16,90 @@ import { getQuote } from '../services/stockService';
 import PressableButton from '../components/PressableButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import LoadingModal from '../components/LoadingModal';
-import { loadFavs, saveFavs } from '../services/firebase';
+import { auth, loadFavs, saveFavs } from '../services/firebase';
 import StockScreen from './StockScreen';
+import * as FileSystem from 'expo-file-system';
 
 function FavouritesScreen(props) {
   const [quotes, setQuotes] = useState([]);
   const [symbol, setSymbol] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('');
   const [showStockScreen, setShowStockScreen] = useState(-1);
+
+  const fileUri = `${FileSystem.documentDirectory}${auth.currentUser.email}-favs.txt`;
+
+  const loadFromLocalStorage = async () => {
+    try {
+      console.log('Loading from local storage...');
+      setLoadingMessage('Loading...');
+      setQuotes([]);
+
+      const savedSymbols = (await FileSystem.readAsStringAsync(fileUri))
+        .split(' ')
+        .filter(d => d.length !== 0);
+
+      if (savedSymbols.length === 0) {
+        throw new Error('No data saved in local storage');
+      }
+
+      let i = 1;
+      const temp = [];
+
+      for (const s of savedSymbols) {
+        setLoadingMessage(`Loading... ${i++}/${savedSymbols.length}`);
+        const { success, data: quote } = await getQuote(s);
+        if (!success) {
+          continue;
+        }
+
+        quote.lossProfitColor = quote.changePercent >= 0 ? 'green' : 'red';
+        temp.push(quote);
+      }
+      setQuotes(temp);
+    } catch (e) {
+      Alert.alert(
+        'Could not load',
+        'Favourites were not loaded from local storage'
+      );
+      console.log('Could not load from local storage');
+    } finally {
+      setLoadingMessage('');
+      console.log('Loading from local storage complete');
+    }
+  };
+
+  const continueSavingToLocalStorage = async () => {
+    let data = '';
+    for (const q of quotes) {
+      data += q.symbol + ' ';
+    }
+    await FileSystem.writeAsStringAsync(fileUri, data);
+  };
+
+  const saveToLocalStorage = async () => {
+    try {
+      console.log('Saving to local storage...');
+
+      if (quotes.length === 0) {
+        Alert.alert('Saving noting', 'All favourites will be deleted', [
+          { text: 'No' },
+          { text: 'Yes', onPress: continueSavingToLocalStorage },
+        ]);
+        return;
+      }
+      await continueSavingToLocalStorage();
+      Alert.alert('Saved', 'Favourites stored to local storage');
+      console.log('Saved to local storage');
+    } catch (e) {
+      Alert.alert(
+        'Could not save',
+        'Favourites were not stored to local storage'
+      );
+      console.log('Could not save to local storage');
+    } finally {
+      console.log('Saving to local storage complete');
+    }
+  };
 
   const loadSavedFromCloud = async () => {
     try {
@@ -33,12 +109,12 @@ function FavouritesScreen(props) {
 
       const { symbols: symbolsFromCloud } = await loadFavs();
 
-      let i = 1;
-      const temp = [];
-
       if (symbolsFromCloud.length === 0) {
         throw new Error('No data saved in cloud');
       }
+
+      let i = 1;
+      const temp = [];
 
       for (const s of symbolsFromCloud) {
         setLoadingMessage(`Loading... ${i++}/${symbolsFromCloud.length}`);
@@ -52,11 +128,11 @@ function FavouritesScreen(props) {
       }
       setQuotes(temp);
     } catch (err) {
-      Alert.alert('No saved favourites', 'Saved favourites could not be found');
+      Alert.alert('Could not load', 'Favourites were not loaded from cloud');
       console.log('Could not load from cloud');
     } finally {
       setLoadingMessage('');
-      console.log('Loading complete');
+      console.log('Loading from cloud complete');
     }
   };
 
@@ -66,7 +142,6 @@ function FavouritesScreen(props) {
       data.push(q.symbol);
     }
     await saveFavs(data);
-    Alert.alert('Saved', 'Favourites saved');
   };
 
   const saveToCloud = async () => {
@@ -80,13 +155,14 @@ function FavouritesScreen(props) {
         ]);
         return;
       }
-
       await continueSavingToCloud();
+      Alert.alert('Saved', 'Favourites stored to cloud');
+      console.log('Saved to cloud');
     } catch (e) {
-      Alert.alert('Something went wrong', 'Could not save to cloud');
+      Alert.alert('Could not save', 'Favourites were not stored to cloud');
       console.log('Could not save to cloud');
     } finally {
-      console.log('Saved to cloud');
+      console.log('Saving to cloud complete');
     }
   };
 
@@ -175,8 +251,16 @@ function FavouritesScreen(props) {
         />
         <PressableButton onPress={saveToCloud} buttonText="Save to cloud" />
         <PressableButton
+          onPress={saveToLocalStorage}
+          buttonText="Save to local storage"
+        />
+        <PressableButton
           onPress={loadSavedFromCloud}
           buttonText="Load saved from cloud"
+        />
+        <PressableButton
+          onPress={loadFromLocalStorage}
+          buttonText="Load saved from local storage"
         />
         <View style={{ padding: 40 }} />
       </ScrollView>

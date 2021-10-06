@@ -22,8 +22,9 @@ if (firebase.apps.length === 0) {
 const auth = firebase.auth(app);
 const db = firebase.firestore(app);
 
-const saveFavs = (symbols = []) => {
-  db.collection('favs')
+const saveFavs = async (symbols = []) => {
+  await db
+    .collection('favs')
     .doc(auth.currentUser.email)
     .set({ symbols: [...symbols] }, { merge: true });
 };

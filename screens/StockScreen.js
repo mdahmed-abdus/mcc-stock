@@ -38,8 +38,7 @@ function StockScreen(props) {
       '1m'
     );
     const { success: quoteSuccess, data: stockQuoteData } = await getQuote(
-      symbol,
-      '1m'
+      symbol
     );
 
     if (!chartDataSuccess || !quoteSuccess) {

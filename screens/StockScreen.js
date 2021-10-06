@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DefaultTheme } from '@react-navigation/native';
 import {
   Text,
@@ -14,6 +14,8 @@ import { LineChart } from 'react-native-chart-kit';
 import StockDetailRow from '../components/StockDetailRow';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import LoadingModal from '../components/LoadingModal';
+import { getLatestExchangeRate } from '../services/exchangeService';
+import { convertCurrency } from '../utils/calculator';
 
 function StockScreen(props) {
   const [dataAvailable, setDataAvailable] = useState(false);
@@ -22,6 +24,8 @@ function StockScreen(props) {
   const [symbol, setSymbol] = useState('');
   const [stockQuote, setStockQuote] = useState(null);
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [USD, setUSD] = useState(1);
+  const [INR, setINR] = useState(1);
 
   const searchStock = async () => {
     Keyboard.dismiss();
@@ -55,7 +59,7 @@ function StockScreen(props) {
     const y = [];
     for (const d of data) {
       x.push(d.date.replace('-', ' '));
-      y.push(d.close);
+      y.push(d.close.toFixed(2));
     }
 
     setDates(x);
@@ -69,6 +73,21 @@ function StockScreen(props) {
   const getChangePercent = () => {
     return (stockQuote.changePercent * 100).toFixed(2) + '%';
   };
+
+  useEffect(() => {
+    (async () => {
+      const { success, data } = await getLatestExchangeRate();
+      if (!success) {
+        Alert.alert(
+          'Exchange rate not available',
+          'Please refer to USD amount'
+        );
+        return;
+      }
+      setUSD(data.USD);
+      setINR(data.INR);
+    })();
+  }, []);
 
   return (
     <ScrollView>
@@ -90,7 +109,6 @@ function StockScreen(props) {
               chartConfig={{
                 backgroundGradientFrom: 'black',
                 backgroundGradientTo: 'black',
-                decimalPlaces: 2,
                 color: (opacity = 0) => 'rgba(255, 255, 255, 0.15)',
                 labelColor: (opacity = 1) => 'rgba(255, 255, 255, 0.8)',
                 propsForDots: {
@@ -103,23 +121,43 @@ function StockScreen(props) {
             />
             <View style={style.stockDetail}>
               <StockDetailRow
-                propertyNames={['OPEN', 'HIGH']}
-                propertyValues={[stockQuote.open, stockQuote.high]}
-              />
-              <StockDetailRow
-                propertyNames={['LOW', 'VOLUME']}
+                propertyNames={['OPEN', '']}
                 propertyValues={[
-                  stockQuote.low,
-                  stockQuote.volume || stockQuote.latestVolume || '-',
+                  '$' + stockQuote.open.toFixed(2),
+                  '₹' + convertCurrency(stockQuote.open, USD, INR),
                 ]}
               />
               <StockDetailRow
-                propertyNames={['P/E', 'AVG VOLUME']}
-                propertyValues={[stockQuote.peRatio, stockQuote.avgTotalVolume]}
+                propertyNames={['CLOSE', '']}
+                propertyValues={[
+                  '$' + stockQuote.close.toFixed(2),
+                  '₹' + convertCurrency(stockQuote.close, USD, INR),
+                ]}
               />
               <StockDetailRow
-                propertyNames={['CHANGE']}
-                propertyValues={[getChangePercent()]}
+                propertyNames={['LOW', '']}
+                propertyValues={[
+                  '$' + stockQuote.low.toFixed(2),
+                  '₹' + convertCurrency(stockQuote.low, USD, INR),
+                ]}
+              />
+              <StockDetailRow
+                propertyNames={['HIGH', '']}
+                propertyValues={[
+                  '$' + stockQuote.high.toFixed(2),
+                  '₹' + convertCurrency(stockQuote.high, USD, INR),
+                ]}
+              />
+              <StockDetailRow
+                propertyNames={['VOLUME', 'AVG VOLUME']}
+                propertyValues={[
+                  stockQuote.volume || stockQuote.latestVolume || 'N/A',
+                  stockQuote.avgTotalVolume,
+                ]}
+              />
+              <StockDetailRow
+                propertyNames={['CHANGE', 'P/E']}
+                propertyValues={[getChangePercent(), stockQuote.peRatio]}
               />
             </View>
           </View>

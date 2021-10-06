@@ -17,11 +17,11 @@ import LoadingModal from '../components/LoadingModal';
 import { getLatestExchangeRate } from '../services/exchangeService';
 import { convertCurrency } from '../utils/calculator';
 
-function StockScreen(props) {
+function StockScreen({ stockSymbol = '', setStockSymbol }) {
   const [dataAvailable, setDataAvailable] = useState(false);
   const [dates, setDates] = useState([]);
   const [closes, setCloses] = useState([]);
-  const [symbol, setSymbol] = useState('');
+  const [symbol, setSymbol] = useState(stockSymbol);
   const [stockQuote, setStockQuote] = useState(null);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [USD, setUSD] = useState(1);
@@ -86,7 +86,16 @@ function StockScreen(props) {
       }
       setUSD(data.USD);
       setINR(data.INR);
+
+      if (symbol.length > 0) {
+        searchStock();
+      }
     })();
+
+    return () => {
+      setSymbol('');
+      setStockSymbol(-1);
+    };
   }, []);
 
   return (
@@ -179,6 +188,7 @@ const style = StyleSheet.create({
   main: {
     flex: 1,
     paddingBottom: 50,
+    backgroundColor: 'black',
   },
   dataContainer: {
     display: 'flex',

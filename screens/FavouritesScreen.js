@@ -9,6 +9,7 @@ import {
   Alert,
   Button,
   StyleSheet,
+  Modal,
 } from 'react-native';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import { getQuote } from '../services/stockService';
@@ -16,11 +17,13 @@ import PressableButton from '../components/PressableButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import LoadingModal from '../components/LoadingModal';
 import { loadFavs, saveFavs } from '../services/firebase';
+import StockScreen from './StockScreen';
 
 function FavouritesScreen(props) {
   const [quotes, setQuotes] = useState([]);
   const [symbol, setSymbol] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [showStockScreen, setShowStockScreen] = useState(-1);
 
   const loadSavedFromCloud = async () => {
     try {
@@ -106,10 +109,7 @@ function FavouritesScreen(props) {
     setQuotes([...quotes, quote]);
   };
 
-  const showQuote = index => {
-    console.log('show quote:', index);
-    // implement
-  };
+  const showQuote = index => setShowStockScreen(index);
 
   const removeStock = async index => {
     console.log('removed index:', index);
@@ -124,9 +124,26 @@ function FavouritesScreen(props) {
   }, []);
 
   return (
-    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback
+      style={{ flex: 1, backgroundColor: 'black' }}
+      onPress={Keyboard.dismiss}
+    >
       <ScrollView style={style.mainView}>
         <LoadingModal loadingMessage={loadingMessage} />
+        {showStockScreen !== -1 && (
+          <Modal visible={showStockScreen !== -1}>
+            <View style={{ backgroundColor: 'black', flex: 1 }}>
+              <StockScreen
+                stockSymbol={quotes[showStockScreen].symbol}
+                setStockSymbol={setShowStockScreen}
+              />
+              <PressableButton
+                buttonText="Close"
+                onPress={() => setShowStockScreen(-1)}
+              />
+            </View>
+          </Modal>
+        )}
         {quotes.map((q, i) => (
           <Pressable
             key={i}

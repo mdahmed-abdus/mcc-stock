@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Alert, StyleSheet, TextInput, View } from 'react-native';
-import {
-  auth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from '../services/firebase';
+import { auth } from '../services/firebase';
 import PressableButton from '../components/PressableButton';
 
 function AuthScreen() {
@@ -25,7 +21,7 @@ function AuthScreen() {
 
   const handleSignUp = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await auth.createUserWithEmailAndPassword(email, password);
     } catch (e) {
       console.log('Could not signup');
       console.log(e.message);
@@ -35,7 +31,7 @@ function AuthScreen() {
 
   const handleLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await auth.signInWithEmailAndPassword(email, password);
     } catch (e) {
       console.log('Could not login');
       console.log(e.message);

@@ -10,14 +10,14 @@ import {
 } from 'react-native';
 import PressableButton from '../components/PressableButton';
 import * as Location from 'expo-location';
-import { auth, signOut } from '../services/firebase';
+import { auth } from '../services/firebase';
 
 function OthersScreen(props) {
   const navigation = useNavigation();
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth);
+      await auth.signOut();
       navigation.replace('auth');
     } catch (e) {
       console.log('Could not sign out');

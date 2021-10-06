@@ -1,10 +1,4 @@
-import { getApps, initializeApp, getApp } from 'firebase/app';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from 'firebase/auth';
+import * as firebase from 'firebase';
 import { FIREBASE } from '../constants/keys';
 
 const firebaseConfig = {
@@ -16,18 +10,12 @@ const firebaseConfig = {
   appId: FIREBASE.appId,
 };
 
-let app;
-if (getApps().length === 0) {
-  app = initializeApp(firebaseConfig);
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig);
 } else {
-  app = getApp();
+  firebase.app();
 }
 
-const auth = getAuth(app);
+const auth = firebase.auth();
 
-export {
-  auth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-};
+export { auth };

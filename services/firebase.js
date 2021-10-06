@@ -1,5 +1,7 @@
 import firebase from 'firebase';
 import { FIREBASE } from '../constants/keys';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: FIREBASE.apiKey,
@@ -10,12 +12,25 @@ const firebaseConfig = {
   appId: FIREBASE.appId,
 };
 
+let app;
 if (firebase.apps.length === 0) {
-  firebase.initializeApp(firebaseConfig);
+  app = firebase.initializeApp(firebaseConfig);
 } else {
-  firebase.app();
+  app = firebase.app();
 }
 
-const auth = firebase.auth();
+const auth = firebase.auth(app);
+const db = firebase.firestore(app);
 
-export { auth };
+const saveFav = (symbols = []) => {
+  db.collection('favs')
+    .doc(auth.currentUser.email)
+    .set({ symbols: [...symbols] }, { merge: true });
+};
+
+const loadFavs = async () => {
+  const doc = await db.collection('favs').doc(auth.currentUser.email).get();
+  return doc.data();
+};
+
+export { auth, db, saveFav, loadFavs };

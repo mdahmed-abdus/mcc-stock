@@ -11,6 +11,7 @@ import {
 import PressableButton from '../components/PressableButton';
 import * as Location from 'expo-location';
 import { auth } from '../services/firebase';
+import LoadingModal from '../components/LoadingModal';
 
 function OthersScreen(props) {
   const navigation = useNavigation();
@@ -26,9 +27,11 @@ function OthersScreen(props) {
   };
 
   const [currentLocation, setCurrentLocation] = useState(null);
+  const [loadingMessage, setLoadingMessage] = useState('');
 
   const refreshLocation = async () => {
     console.log('Refreshing location...');
+    setLoadingMessage('Loading...');
     try {
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
@@ -46,6 +49,8 @@ function OthersScreen(props) {
       console.log(e);
       Alert.alert('Location error', e.message);
       console.log('Could not refresh location');
+    } finally {
+      setLoadingMessage('');
     }
   };
 
@@ -56,6 +61,7 @@ function OthersScreen(props) {
   return (
     <TouchableWithoutFeedback style={{ flex: 1 }}>
       <View style={style.mainView}>
+        <LoadingModal loadingMessage={loadingMessage} />
         {currentLocation?.country ? (
           <Text style={style.textStyle}>
             Your location: {currentLocation.city}, {currentLocation.country} (

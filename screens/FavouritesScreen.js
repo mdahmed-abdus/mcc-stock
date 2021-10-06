@@ -12,74 +12,79 @@ import {
 } from 'react-native';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import { getQuote } from '../services/stockService';
-import * as FileSystem from 'expo-file-system';
 import PressableButton from '../components/PressableButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import LoadingModal from '../components/LoadingModal';
+import { loadFavs, saveFavs } from '../services/firebase';
 
 function FavouritesScreen(props) {
-  const fileUri = FileSystem.documentDirectory + 'fav-stocks.txt';
   const [quotes, setQuotes] = useState([]);
   const [symbol, setSymbol] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('');
 
-  const loadSaved = async () => {
-    console.log('Loading...');
-    setLoadingMessage('Loading...');
-    setQuotes([]);
+  const loadSavedFromCloud = async () => {
+    try {
+      console.log('Loading from cloud...');
+      setLoadingMessage('Loading...');
+      setQuotes([]);
 
-    const savedSymbols = (await FileSystem.readAsStringAsync(fileUri))
-      .split(' ')
-      .filter(d => d.length !== 0);
+      const { symbols: symbolsFromCloud } = await loadFavs();
 
-    if (savedSymbols.length === 0) {
-      Alert.alert('No saved favourites', 'Saved favourites could not be found');
-      console.log('Loading complete');
-      setLoadingMessage('');
-      return;
-    }
+      let i = 1;
+      const temp = [];
 
-    let i = 1;
-    const temp = [];
-
-    for (const s of savedSymbols) {
-      const { success, data: quote } = await getQuote(s);
-      if (!success) {
-        continue;
+      if (symbolsFromCloud.length === 0) {
+        throw new Error('No data saved in cloud');
       }
 
-      quote.lossProfitColor = quote.changePercent >= 0 ? 'green' : 'red';
-      temp.push(quote);
-      setLoadingMessage(`Loading... ${i++}/${savedSymbols.length}`);
-    }
+      for (const s of symbolsFromCloud) {
+        setLoadingMessage(`Loading... ${i++}/${symbolsFromCloud.length}`);
+        const { success, data: quote } = await getQuote(s);
+        if (!success) {
+          continue;
+        }
 
-    setQuotes(temp);
-    setLoadingMessage('');
-    console.log('Loading complete');
+        quote.lossProfitColor = quote.changePercent >= 0 ? 'green' : 'red';
+        temp.push(quote);
+      }
+      setQuotes(temp);
+    } catch (err) {
+      Alert.alert('No saved favourites', 'Saved favourites could not be found');
+      console.log('Could not load from cloud');
+    } finally {
+      setLoadingMessage('');
+      console.log('Loading complete');
+    }
   };
 
-  const save = async () => {
-    console.log('Saving...');
-    let data = '';
+  const continueSavingToCloud = async () => {
+    const data = [];
     for (const q of quotes) {
-      data += q.symbol + ' ';
+      data.push(q.symbol);
     }
-
-    await FileSystem.writeAsStringAsync(fileUri, data);
-
+    await saveFavs(data);
     Alert.alert('Saved', 'Favourites saved');
-    console.log('Favs saved:', fileUri);
   };
 
-  const saveToFile = async () => {
-    if (quotes.length === 0) {
-      Alert.alert('Saving noting', 'All favourites will be deleted', [
-        { text: 'No' },
-        { text: 'Yes', onPress: save },
-      ]);
-      return;
+  const saveToCloud = async () => {
+    try {
+      console.log('Saving to cloud...');
+
+      if (quotes.length === 0) {
+        Alert.alert('Saving noting', 'All favourites will be deleted', [
+          { text: 'No' },
+          { text: 'Yes', onPress: continueSavingToCloud },
+        ]);
+        return;
+      }
+
+      await continueSavingToCloud();
+    } catch (e) {
+      Alert.alert('Something went wrong', 'Could not save to cloud');
+      console.log('Could not save to cloud');
+    } finally {
+      console.log('Saved to cloud');
     }
-    save();
   };
 
   const handleOnPress = async () => {
@@ -90,9 +95,9 @@ function FavouritesScreen(props) {
     }
 
     console.log('handleOnPress -', symbol);
-    const quote = await getQuote(symbol);
+    const { success, data: quote } = await getQuote(symbol);
 
-    if (!quote.success) {
+    if (!success) {
       Alert.alert('Invalid symbol', `The stock symbol "${symbol}" is invalid`);
       return;
     }
@@ -115,7 +120,7 @@ function FavouritesScreen(props) {
   };
 
   useEffect(() => {
-    loadSaved();
+    loadSavedFromCloud();
   }, []);
 
   return (
@@ -151,8 +156,11 @@ function FavouritesScreen(props) {
           onPress={handleOnPress}
           buttonText="Add stock"
         />
-        <PressableButton onPress={saveToFile} buttonText="Save" />
-        <PressableButton onPress={loadSaved} buttonText="Load saved" />
+        <PressableButton onPress={saveToCloud} buttonText="Save to cloud" />
+        <PressableButton
+          onPress={loadSavedFromCloud}
+          buttonText="Load saved from cloud"
+        />
         <View style={{ padding: 40 }} />
       </ScrollView>
     </TouchableWithoutFeedback>

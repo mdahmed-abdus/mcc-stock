@@ -28,6 +28,7 @@ function OthersScreen(props) {
   const [currentLocation, setCurrentLocation] = useState(null);
 
   const refreshLocation = async () => {
+    console.log('Refreshing location...');
     try {
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
@@ -39,11 +40,12 @@ function OthersScreen(props) {
       });
 
       setCurrentLocation(postalAddress[0]);
-      console.log(postalAddress[0]);
+      console.log('Location refreshed');
     } catch (e) {
       console.log('Location error');
       console.log(e);
       Alert.alert('Location error', e.message);
+      console.log('Could not refresh location');
     }
   };
 

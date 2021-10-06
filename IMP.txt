@@ -1,0 +1,8 @@
+Steps to solve firebase timer warning:
+
+1. Go to node_modules/react-native/Libraries/Core/Timer/JSTimers.js
+2. Look for the variable MAX_TIMER_DURATION_MS
+3. Change 60 * 1000 to 10000 * 1000, needed for firebase
+4. Save the changes and re-build your app.
+
+Source: https://stackoverflow.com/questions/44485213/using-firebase-in-react-native-shows-a-timer-warning/46678121#46678121

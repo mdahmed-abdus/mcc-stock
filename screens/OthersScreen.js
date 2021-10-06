@@ -16,6 +16,7 @@ import LoadingModal from '../components/LoadingModal';
 function OthersScreen(props) {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loadingMessage, setLoadingMessage] = useState('');
+  const user = { email: auth.currentUser.email };
 
   const navigation = useNavigation();
 
@@ -62,6 +63,7 @@ function OthersScreen(props) {
     <TouchableWithoutFeedback style={{ flex: 1 }}>
       <View style={style.mainView}>
         <LoadingModal loadingMessage={loadingMessage} />
+        <Text style={style.textStyle}>Logged in as: {user.email}</Text>
         {currentLocation?.country ? (
           <Text style={style.textStyle}>
             Your location: {currentLocation.city}, {currentLocation.country} (

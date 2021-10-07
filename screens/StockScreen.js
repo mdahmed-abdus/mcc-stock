@@ -107,6 +107,7 @@ function StockScreen({ stockSymbol = '', setStockSymbol = () => {} }) {
             <Text style={style.text}>
               {stockQuote.companyName} [{stockQuote.symbol}]
             </Text>
+            <Text style={style.infoText}>Showing data for 1 month</Text>
             <LineChart
               style={style.lineChart}
               data={{ labels: dates, datasets: [{ data: closes }] }}
@@ -197,9 +198,14 @@ const style = StyleSheet.create({
     paddingBottom: 10,
   },
   text: {
-    padding: 20,
+    paddingTop: 20,
     fontSize: 30,
     color: 'white',
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#616263',
+    paddingBottom: 20,
   },
   lineChart: {
     borderTopWidth: 1,

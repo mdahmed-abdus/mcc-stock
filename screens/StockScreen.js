@@ -17,7 +17,7 @@ import LoadingModal from '../components/LoadingModal';
 import { getLatestExchangeRate } from '../services/exchangeService';
 import { convertCurrency } from '../utils/calculator';
 
-function StockScreen({ stockSymbol = '', setStockSymbol }) {
+function StockScreen({ stockSymbol = '', setStockSymbol = () => {} }) {
   const [dataAvailable, setDataAvailable] = useState(false);
   const [dates, setDates] = useState([]);
   const [closes, setCloses] = useState([]);

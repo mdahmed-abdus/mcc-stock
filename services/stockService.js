@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IEX_PUBLISHABLE } from '../constants/keys.js';
+import { IEX_PUBLISHABLE } from '../constants/keys-prod';
 
 const root = async url => {
   url += `?token=${IEX_PUBLISHABLE}`;
@@ -14,22 +14,22 @@ const root = async url => {
 };
 
 const getSymbols = () =>
-  root(`https://sandbox.iexapis.com/stable/ref-data/symbols`);
+  root(`https://cloud.iexapis.com/stable/ref-data/symbols`);
 
 const getStockPrice = symbol =>
-  root(`https://sandbox.iexapis.com/stable/stock/${symbol}/price`);
+  root(`https://cloud.iexapis.com/stable/stock/${symbol}/price`);
 
 const getCompanyDetails = symbol =>
-  root(`https://sandbox.iexapis.com/stable/stock/${symbol}/company`);
+  root(`https://cloud.iexapis.com/stable/stock/${symbol}/company`);
 
 const getQuote = symbol =>
-  root(`https://sandbox.iexapis.com/stable/stock/${symbol}/quote`);
+  root(`https://cloud.iexapis.com/stable/stock/${symbol}/quote`);
 
 const getChartDataForOneDay = symbol =>
-  root(`https://sandbox.iexapis.com/stable/stock/${symbol}/intraday-prices`);
+  root(`https://cloud.iexapis.com/stable/stock/${symbol}/intraday-prices`);
 
 const getChartData = (symbol, range = '1m') =>
-  root(`https://sandbox.iexapis.com/stable/stock/${symbol}/chart/${range}`);
+  root(`https://cloud.iexapis.com/stable/stock/${symbol}/chart/${range}`);
 
 export {
   getSymbols,

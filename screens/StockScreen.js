@@ -15,7 +15,7 @@ import StockDetailRow from '../components/StockDetailRow';
 import SearchBoxWithButton from '../components/SearchBoxWithButton';
 import LoadingModal from '../components/LoadingModal';
 import { getLatestExchangeRate } from '../services/exchangeService';
-import { convertCurrency } from '../utils/calculator';
+import { convertUsdToInr } from '../utils/calculator';
 
 function StockScreen({ stockSymbol = '', setStockSymbol = () => {} }) {
   const [dataAvailable, setDataAvailable] = useState(false);
@@ -134,28 +134,28 @@ function StockScreen({ stockSymbol = '', setStockSymbol = () => {} }) {
                 propertyNames={['OPEN', '']}
                 propertyValues={[
                   '$' + stockQuote.open.toFixed(2),
-                  '₹' + convertCurrency(stockQuote.open, USD, INR),
+                  '₹' + convertUsdToInr(stockQuote.open, USD, INR),
                 ]}
               />
               <StockDetailRow
                 propertyNames={['CLOSE', '']}
                 propertyValues={[
                   '$' + stockQuote.close.toFixed(2),
-                  '₹' + convertCurrency(stockQuote.close, USD, INR),
+                  '₹' + convertUsdToInr(stockQuote.close, USD, INR),
                 ]}
               />
               <StockDetailRow
                 propertyNames={['LOW', '']}
                 propertyValues={[
                   '$' + stockQuote.low.toFixed(2),
-                  '₹' + convertCurrency(stockQuote.low, USD, INR),
+                  '₹' + convertUsdToInr(stockQuote.low, USD, INR),
                 ]}
               />
               <StockDetailRow
                 propertyNames={['HIGH', '']}
                 propertyValues={[
                   '$' + stockQuote.high.toFixed(2),
-                  '₹' + convertCurrency(stockQuote.high, USD, INR),
+                  '₹' + convertUsdToInr(stockQuote.high, USD, INR),
                 ]}
               />
               <StockDetailRow

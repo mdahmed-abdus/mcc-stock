@@ -14,3 +14,4 @@ web-build/
 .env
 .vscode
 keys.js
+keys-prod.js

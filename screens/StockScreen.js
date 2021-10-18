@@ -65,6 +65,7 @@ function StockScreen({ stockSymbol = '', setStockSymbol = () => {} }) {
     setDates(x);
     setCloses(y);
     setStockQuote(stockQuoteData);
+    console.log(stockQuoteData);
     setDataAvailable(true);
     console.log('Refreshed');
     setLoadingMessage('');
@@ -133,29 +134,29 @@ function StockScreen({ stockSymbol = '', setStockSymbol = () => {} }) {
               <StockDetailRow
                 propertyNames={['OPEN', '']}
                 propertyValues={[
-                  '$' + stockQuote.open.toFixed(2),
-                  '₹' + convertUsdToInr(stockQuote.open, USD, INR),
+                  '$' + (stockQuote?.open?.toFixed(2) || '0'),
+                  '₹' + convertUsdToInr(stockQuote.open || 0, USD, INR),
                 ]}
               />
               <StockDetailRow
                 propertyNames={['CLOSE', '']}
                 propertyValues={[
-                  '$' + stockQuote.close.toFixed(2),
-                  '₹' + convertUsdToInr(stockQuote.close, USD, INR),
+                  '$' + (stockQuote?.close?.toFixed(2) || '0'),
+                  '₹' + convertUsdToInr(stockQuote.close || 0, USD, INR),
                 ]}
               />
               <StockDetailRow
                 propertyNames={['LOW', '']}
                 propertyValues={[
-                  '$' + stockQuote.low.toFixed(2),
-                  '₹' + convertUsdToInr(stockQuote.low, USD, INR),
+                  '$' + (stockQuote?.low?.toFixed(2) || '0'),
+                  '₹' + convertUsdToInr(stockQuote.low || 0, USD, INR),
                 ]}
               />
               <StockDetailRow
                 propertyNames={['HIGH', '']}
                 propertyValues={[
-                  '$' + stockQuote.high.toFixed(2),
-                  '₹' + convertUsdToInr(stockQuote.high, USD, INR),
+                  '$' + (stockQuote?.high?.toFixed(2) || '0'),
+                  '₹' + convertUsdToInr(stockQuote.high || 0, USD, INR),
                 ]}
               />
               <StockDetailRow
